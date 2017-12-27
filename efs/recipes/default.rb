@@ -15,7 +15,7 @@ directory '/efs' do
 end
  
 node['efs']['mounts'].each do |mount_point, attribs|
-  mount_efs mount_point do
+  mount mount_point do
     fsid attribs['fsid']
     options attribs['options']
     action :mount
