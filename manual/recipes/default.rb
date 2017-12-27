@@ -1,4 +1,4 @@
-package nfs-utils
+package 'nfs-utils'
 
 directory '/efs' do
   owner 'root'
