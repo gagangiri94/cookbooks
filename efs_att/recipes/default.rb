@@ -1,4 +1,6 @@
-package node['efs']['nfs-package']
+package 'nsf' do
+  package_name node['efs']['nfs-package']
+end
 #  action :install
 #end
 
