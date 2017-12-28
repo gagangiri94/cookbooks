@@ -15,14 +15,13 @@ efs_uri = "#{az}.#{file_system_id}.efs.#{region}.amazonaws.com:/"
 directory '/efs' do
   owner 'root'
   group 'root'
-  mode '0755
+  mode '0755'
   recursive true
   action :create
 end
 
 mount '/efs' do
-  device efs_uri
-  fstype 'nfs4'
-  options 'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2'
-  action [:mount, :enable]
+	device efs_uri
+	options 'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2'
+	action [:mount, :enable]
 end
