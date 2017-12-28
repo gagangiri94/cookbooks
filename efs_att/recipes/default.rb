@@ -1,4 +1,6 @@
-package node['efs']['nfs-package']
+package 'nfs' do
+  package_name node['efs']['nfs-package']
+end
 
 directory '/efs' do
   owner 'root'
