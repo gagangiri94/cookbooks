@@ -1,11 +1,12 @@
-package 'Install NFS' do
-  case node[:platform]
-  when 'redhat', 'centos'
-    package_name 'nfs-utils'
-  when 'ubuntu', 'debian'
-    package_name 'nfs-common'
-  end
-end
+#package 'Install NFS' do
+#  case node[:platform]
+#  when 'redhat', 'centos'
+#    package_name 'nfs-utils'
+#  when 'ubuntu', 'debian'
+#    package_name 'nfs-common'
+#  end
+#end
+package 'nfs-utils'
 
 az = node['ec2']['placement_availability_zone']
 region = az[0..-2] # trim last char
