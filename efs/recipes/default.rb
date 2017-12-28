@@ -1,10 +1,3 @@
-#
-# Cookbook Name:: efs
-# Recipe:: default
-#
-# Copyright 2017, Matt Kulka
-#
-
 package node['efs']['nfs-package']
 
 directory '/efs' do
