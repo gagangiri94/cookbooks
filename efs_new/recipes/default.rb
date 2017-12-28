@@ -11,7 +11,7 @@ package 'nfs-utils'
 az = node['ec2']['placement_availability_zone']
 region = az[0..-2] # trim last char
 file_system_id = 'fs-01234567'
-efs_uri = "#{az}.#{file_system_id}.efs.#{region}.amazonaws.com:/" 
+efs_uri = "#{file_system_id}.efs.#{region}.amazonaws.com:/" 
 
 directory '/efs' do
   owner 'root'
