@@ -10,7 +10,7 @@ end
 az = node['ec2']['placement_availability_zone']
 region = az[0..-2] # trim last char
 file_system_id = 'fs-01234567'
-efs_uri = "#{az}.#{fs-f54b4cbc}.efs.#{us-east-1}.amazonaws.com:/" 
+efs_uri = "#{az}.#{file_system_id}.efs.#{region}.amazonaws.com:/" 
 
 directory '/efs' do
   owner 'root'
