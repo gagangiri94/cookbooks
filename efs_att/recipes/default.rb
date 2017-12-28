@@ -1,8 +1,4 @@
-package 'nsf' do
-  package_name node['efs']['nfs-package']
-end
-#  action :install
-#end
+package node['efs']['nfs-package']
 
 directory '/efs' do
   owner 'root'
