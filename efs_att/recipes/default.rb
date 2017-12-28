@@ -1,5 +1,6 @@
 package 'nfs' do
   package_name node['efs']['nfs-package']
+  action :inatall
 end
 
 directory '/efs' do
