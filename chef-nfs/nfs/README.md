@@ -149,7 +149,7 @@ platform-specific server services for an effective protocol level of NFSv3.
 ## nfs::server4 recipe
 
 This recipe includes the common client components from `nfs::_common`.  It also configures and installs the
-platform-specific server services for an effective protocol level of NFSv4.  Effectively the same as running
+platform-specific server servcies for an effective protocol level of NFSv4.  Effectively the same as running
 `nfs::_common` and `nfs::_idmap` and `nfs::server`.
 
 ## nfs::undo recipe
@@ -165,8 +165,7 @@ system like so.
 Author: Eric G. Wolfe (eric.wolfe@gmail.com) [![endorse](https://api.coderwall.com/atomic-penguin/endorsecount.png)](https://coderwall.com/atomic-penguin)
 Contributors: Riot Games, Sean OMeara
 
-Copyright 2011-2017, Eric G. Wolfe
-Copyright 2014, Joe Rocklin
+Copyright 2011-2014, Eric G. Wolfe
 Copyright 2012, Riot Games
 Copyright 2012, Sean OMeara
 

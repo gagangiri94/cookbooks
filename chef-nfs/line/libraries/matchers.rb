@@ -1,19 +1,18 @@
 if defined?(ChefSpec)
-  custom_resources = {
-    add_to_list: [:edit],
-    append_if_no_line: [:edit],
-    delete_from_list: [:edit],
-    delete_lines: [:edit],
-    replace_or_add: [:edit],
-  }
 
-  custom_resources.each do |resource, actions|
-    actions.each do |action|
-      ChefSpec.define_matcher resource
-      define_method("#{action}_#{resource}") do |message|
-        ChefSpec::Matchers::ResourceMatcher
-          .new(resource.to_sym, action, message)
-      end
-    end
+  def edit_add_to_list(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:add_to_list, :edit, resource)
+  end
+
+  def edit_append_if_no_line(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:append_if_no_line, :edit, resource)
+  end
+
+  def edit_delete_lines(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:delete_lines, :edit, resource)
+  end
+
+  def edit_replace_or_add(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:replace_or_add, :edit, resource)
   end
 end

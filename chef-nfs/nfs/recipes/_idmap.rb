@@ -21,13 +21,14 @@ include_recipe 'nfs::_common'
 
 # Configure idmap template for NFSv4 client/server support
 template node['nfs']['config']['idmap_template'] do
-  mode 0o0644
+  mode 00644
   notifies :restart, 'service[idmap]', :immediately
 end
 
 # Start idmapd components
 service 'idmap' do
   service_name node['nfs']['service']['idmap']
+  provider node['nfs']['service_provider']['idmap'] if node['platform'] == 'ubuntu'
   action [:start, :enable]
   supports :status => true
 end

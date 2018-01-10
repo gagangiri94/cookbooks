@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+include_attribute 'sysctl'
+
 # Allowing Version 2, 3 and 4 of NFS to be enabled or disabled.
 # Default behavior, defer to protocol level(s) supported by kernel.
 default['nfs']['v2'] = nil
@@ -57,23 +59,25 @@ default['nfs']['client-services'] = %w(portmap lock)
 case node['platform_family']
 
 when 'rhel'
-  if node['platform'] == 'amazon'
+  case node['platform']
+  when 'amazon'
     # For future amazon versions
-  elsif node['platform_version'].to_i <= 5
+  else
     # RHEL5 edge case package set and portmap name
-    default['nfs']['packages'] = %w(nfs-utils portmap)
-    default['nfs']['service']['portmap'] = 'portmap'
-  elsif node['platform_version'].to_i >= 7
-    default['nfs']['service']['lock'] = 'nfs-lock'
-    default['nfs']['service']['server'] = 'nfs-server'
-    default['nfs']['service']['idmap'] = 'nfs-idmap'
+    if node['platform_version'].to_i <= 5
+      default['nfs']['packages'] = %w(nfs-utils portmap)
+      default['nfs']['service']['portmap'] = 'portmap'
+    elsif node['platform_version'].to_i >= 7
+      default['nfs']['service']['lock'] = 'nfs-lock'
+      default['nfs']['service']['server'] = 'nfs-server'
+      default['nfs']['service']['idmap'] = 'nfs-idmap'
 
-    default['nfs']['client-services'] = \
       if node['platform_version'] == '7.0.1406'
-        %w(nfs-lock.service)
+        default['nfs']['client-services'] = %w(nfs-lock.service)
       else
-        %w(nfs-config.service nfs-client.target)
+        default['nfs']['client-services'] = %w(nfs-client.target)
       end
+    end
   end
 
 when 'freebsd'
@@ -85,12 +89,11 @@ when 'freebsd'
   default['nfs']['service']['server'] = 'nfsd'
   default['nfs']['threads'] = 24
   default['nfs']['mountd_flags'] = '-r'
-  default['nfs']['server_flags'] = \
-    if node['nfs']['threads'] >= 0
-      "-u -t -n #{node['nfs']['threads']}"
-    else
-      '-u -t'
-    end
+  if node['nfs']['threads'] >= 0
+    default['nfs']['server_flags'] = "-u -t -n #{node['nfs']['threads']}"
+  else
+    default['nfs']['server_flags'] = '-u -t'
+  end
 
 when 'suse'
   default['nfs']['packages'] = %w(nfs-client nfs-kernel-server rpcbind)
@@ -109,37 +112,27 @@ when 'debian'
   default['nfs']['config']['server_template'] = '/etc/default/nfs-kernel-server'
   default['nfs']['idmap']['group'] = 'nogroup'
 
-  case node['platform']
-  when 'debian'
+  # Debian 6.0
+  if node['platform_version'].to_i <= 6
+    default['nfs']['packages'] = %w(nfs-common portmap)
+    default['nfs']['service']['portmap'] = 'portmap'
+  end
 
-    case node['platform_version'].to_i
-        # Debian 6.0
-        when 6 # (1..6)
-          default['nfs']['packages'] = %w(nfs-common portmap)
-          default['nfs']['service']['portmap'] = 'portmap'
-        when 9 # (9..99)
-          # identical to Ubuntu > 15.04?!
-          default['nfs']['service']['lock'] = 'rpc-statd'
-          default['nfs']['service']['idmap'] = 'nfs-idmapd'
-          default['nfs']['client-services'] = %w(portmap lock nfs-config.service)
-    end
+  case node['platform']
 
   when 'ubuntu'
-    default['nfs']['service']['portmap'] = 'rpcbind'
+    default['nfs']['service']['portmap'] = 'rpcbind-boot'
     default['nfs']['service']['lock'] = 'statd' # There is no lock service on Ubuntu
     default['nfs']['service']['idmap'] = 'idmapd'
     default['nfs']['idmap']['pipefs_directory'] = '/run/rpc_pipefs'
+    default['nfs']['service_provider']['idmap'] = Chef::Provider::Service::Upstart
+    default['nfs']['service_provider']['portmap'] = Chef::Provider::Service::Upstart
+    default['nfs']['service_provider']['lock'] = Chef::Provider::Service::Upstart
 
-    # Ubuntu 13.04 and earlier service name = 'portmap'
-    if node['platform_version'].to_f <= 13.04
-      default['nfs']['packages'] = %w(nfs-common portmap)
-      default['nfs']['service']['portmap'] = 'portmap'
-    end
-
-    if Chef::VersionConstraint.new('>= 15.04').include?(node['platform_version'])
-      default['nfs']['service']['lock'] = 'rpc-statd'
-      default['nfs']['service']['idmap'] = 'nfs-idmapd'
-      default['nfs']['client-services'] = %w(portmap lock nfs-config.service)
+    # Ubuntu 11.04 and 14.04 service script edge cases
+    if node['platform_version'].to_f <= 11.04 ||
+       node['platform_version'].to_f >= 14.04
+      default['nfs']['service']['portmap'] = 'rpcbind'
     end
   end
 end
