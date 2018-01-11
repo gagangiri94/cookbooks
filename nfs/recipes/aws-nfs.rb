@@ -23,10 +23,11 @@ bash 'append_to_exportfile' do
  cat /tmp/exports >> /etc/exports
  rm /tmp/exports
  EOH
+ not_if 'grep -q \'/nfs\' /etc/exports'
 end
 
 
 execute 'restart nfs' do
-  command 'systemctl restart nfs-kernel-server'
+  command 'service nfs-kernel-server restart'
   action :run
 end
