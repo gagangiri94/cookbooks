@@ -7,7 +7,7 @@ package 'nfs-kernel-server' do
 	action :install
 end	
 
-directory '/nfs/data/mps' do
+directory '/nfs' do
   owner 'nobody'
   group 'nogroup'
   action :create
