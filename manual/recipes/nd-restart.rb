@@ -6,10 +6,23 @@ service 'apache stop' do
     service_name 'apache2'
   end
   supports :status => true
-  stop_command 'service apache2 stop && sleep 10'
   action :stop
 end
 
+execute 'message' do
+  command "echo 'Waiting 10 seconds after service stop' "
+  action :run
+end
+
+execute 'sleep' do
+  command 'sleep 10'
+  action :run
+end
+
+execute 'start message' do
+  command "echo 'Starting service' "
+  action :run
+end
 
 # service 'httpd stop' do
 #   service_name 'apache2'
@@ -18,11 +31,6 @@ end
 #   action :stop
 # end
 
-
-execute 'echo' do
-  command "echo 'Starting service after 10 seconds delay' "
-  action :run
-end
 #
 # service 'apache start' do
 #   service_name 'apache2'
